@@ -13,6 +13,16 @@ namespace Tasks
 
 		public string Description { get; }
 
-		public bool Done { get; set; }
+		public bool Done { get; private set; }
+
+        public void Check()
+        {
+            Done = true;
+        }
+
+        public void Uncheck()
+        {
+            Done = false;
+        }
 	}
 }

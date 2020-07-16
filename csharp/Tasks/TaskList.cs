@@ -51,10 +51,10 @@ namespace Tasks
 				Add(commandRest[1]);
 				break;
 			case CheckCommand:
-				Check(commandRest[1]);
+				CheckTask(commandRest[1]);
 				break;
 			case UncheckCommand:
-				Uncheck(commandRest[1]);
+				UncheckTask(commandRest[1]);
 				break;
 			case HelpCommand:
 				Help();
@@ -84,7 +84,7 @@ namespace Tasks
 				AddProject(subcommandRest[1]);
 			} else if (subcommand == TaskSubCommand) {
 				var projectTask = subcommandRest[1].Split(" ".ToCharArray(), 2);
-				AddTask(projectTask[0], projectTask[1]);
+				AddTaskWithDescriptionToProject(projectTask[0], projectTask[1]);
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace Tasks
 
         private Project FindProject(string projectKey) => _projects.SingleOrDefault(project => project.Name == projectKey);
 
-        private void AddTask(string projectName, string taskDescription)
+        private void AddTaskWithDescriptionToProject(string projectName, string taskDescription)
         {
             var projectFound = FindProject(projectName);
 			if(projectFound is null)
@@ -107,19 +107,19 @@ namespace Tasks
             projectFound.AddTaskWithDescription(taskDescription);		
         }
 
-		private void Check(string idString)
+		private void CheckTask(string idString)
 		{
-			SetDone(idString, true);
+			SetTaskDone(idString, true);
 		}
 
-		private void Uncheck(string idString)
+		private void UncheckTask(string idString)
 		{
-			SetDone(idString, false);
+			SetTaskDone(idString, false);
 		}
 
-		private void SetDone(string idString, bool done)
+		private void SetTaskDone(string idString, bool done)
 		{
-			int id = int.Parse(idString);
+			var id = int.Parse(idString);
 
 			var identifiedTask = _projects
 				.Select(project => project.Tasks.FirstOrDefault(task => task.Id == id))
@@ -130,8 +130,9 @@ namespace Tasks
 				return;
 			}
 
-			identifiedTask.Done = done;
-		}
+			if(done) identifiedTask.Check();
+            else identifiedTask.Uncheck();
+        }
 
 		private void Help()
 		{
