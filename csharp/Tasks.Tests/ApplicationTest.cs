@@ -15,7 +15,7 @@ namespace Tasks.Tests
 		public void StartTheApplication()
 		{
 			this._console = new FakeConsole();
-			var taskList = new TaskList(_console);
+			var taskList = new TaskListRunner(_console);
 			this._applicationThread = new System.Threading.Thread(() => taskList.Run());
 			_applicationThread.Start();
 		}

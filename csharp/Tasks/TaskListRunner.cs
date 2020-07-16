@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using Tasks.Representation;
 
 namespace Tasks
 {
-	public sealed class TaskList
+	public sealed class TaskListRunner
     {
         private const string Prompt = "> ";
 		private const string Quit = "quit";
@@ -17,15 +16,15 @@ namespace Tasks
         private const string ProjectSubcommand = "project";
         private const string TaskSubCommand = "task";
 
-        private readonly ICollection<Project> _projects;
+        private readonly ProjectList _projects;
 		private readonly IConsole _console;
         private readonly UniqueTaskIdProvider _taskIdProvider;
         private readonly ProjectRepresentationWriter _projectRepresentationWriter;
 
-        public TaskList(IConsole console)
+        public TaskListRunner(IConsole console)
 		{
 			_console = console;
-			_projects = new List<Project>();
+			_projects = new ProjectList();
 			_taskIdProvider = new UniqueTaskIdProvider();
             _projectRepresentationWriter = new ProjectRepresentationWriter(console);
 		}

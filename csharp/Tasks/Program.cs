@@ -4,7 +4,7 @@
     {
         public static void Main()
         {
-            new TaskList(new RealConsole()).Run();
+            new TaskListRunner(new RealConsole()).Run();
         }
     }
 }
