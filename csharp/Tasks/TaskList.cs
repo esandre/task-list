@@ -18,13 +18,13 @@ namespace Tasks
 
         private readonly ICollection<Project> _projects;
 		private readonly IConsole _console;
-
-		private long _lastId;
+        private readonly UniqueTaskIdProvider _taskIdProvider;
 
         public TaskList(IConsole console)
 		{
 			_console = console;
 			_projects = new List<Project>();
+			_taskIdProvider = new UniqueTaskIdProvider();
 		}
 
 		public void Run()
@@ -95,7 +95,7 @@ namespace Tasks
 
         private Project FindProject(string projectKey) => _projects.SingleOrDefault(project => project.Name == projectKey);
 
-        private void AddTask(string projectName, string description)
+        private void AddTask(string projectName, string taskDescription)
         {
             var projectFound = FindProject(projectName);
 			if(projectFound is null)
@@ -104,7 +104,7 @@ namespace Tasks
 				return;
 			}
 
-            projectFound.AddTask(new Task(NextId(), description));		
+            projectFound.AddTask(new Task(_taskIdProvider.NextId(), taskDescription));		
         }
 
 		private void Check(string idString)
@@ -147,11 +147,6 @@ namespace Tasks
 		private void Error(string command)
 		{
 			_console.WriteLine("I don't know what the command \"{0}\" is.", command);
-		}
-
-		private long NextId()
-		{
-			return ++_lastId;
 		}
 	}
 }
