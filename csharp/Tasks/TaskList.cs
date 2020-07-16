@@ -90,7 +90,7 @@ namespace Tasks
 
 		private void AddProject(string name)
 		{
-			_projects.Add(new Project(name));
+			_projects.Add(new Project(name, _taskIdProvider));
 		}
 
         private Project FindProject(string projectKey) => _projects.SingleOrDefault(project => project.Name == projectKey);
@@ -104,7 +104,7 @@ namespace Tasks
 				return;
 			}
 
-            projectFound.AddTask(new Task(_taskIdProvider.NextId(), taskDescription));		
+            projectFound.AddTaskWithDescription(taskDescription);		
         }
 
 		private void Check(string idString)
