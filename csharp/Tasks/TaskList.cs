@@ -5,10 +5,18 @@ using System.Linq;
 namespace Tasks
 {
 	public sealed class TaskList
-	{
+    {
+        private const string Prompt = "> ";
 		private const string Quit = "quit";
+        private const string ShowCommand = "show";
+        private const string AddCommand = "add";
+        private const string CheckCommand = "check";
+        private const string UncheckCommand = "uncheck";
+        private const string HelpCommand = "help";
+        private const string ProjectSubcommand = "project";
+        private const string TaskSubCommand = "task";
 
-		private readonly IDictionary<string, IList<Task>> _tasks = new Dictionary<string, IList<Task>>();
+        private readonly IDictionary<string, IList<Task>> _tasks = new Dictionary<string, IList<Task>>();
 		private readonly IConsole _console;
 
 		private long _lastId;
@@ -26,7 +34,7 @@ namespace Tasks
 		public void Run()
 		{
 			while (true) {
-				_console.Write("> ");
+				_console.Write(Prompt);
 				var command = _console.ReadLine();
 				if (command == Quit) {
 					break;
@@ -40,19 +48,19 @@ namespace Tasks
 			var commandRest = commandLine.Split(" ".ToCharArray(), 2);
 			var command = commandRest[0];
 			switch (command) {
-			case "show":
+			case ShowCommand:
 				Show();
 				break;
-			case "add":
+			case AddCommand:
 				Add(commandRest[1]);
 				break;
-			case "check":
+			case CheckCommand:
 				Check(commandRest[1]);
 				break;
-			case "uncheck":
+			case UncheckCommand:
 				Uncheck(commandRest[1]);
 				break;
-			case "help":
+			case HelpCommand:
 				Help();
 				break;
 			default:
@@ -76,9 +84,9 @@ namespace Tasks
 		{
 			var subcommandRest = commandLine.Split(" ".ToCharArray(), 2);
 			var subcommand = subcommandRest[0];
-			if (subcommand == "project") {
+			if (subcommand == ProjectSubcommand) {
 				AddProject(subcommandRest[1]);
-			} else if (subcommand == "task") {
+			} else if (subcommand == TaskSubCommand) {
 				var projectTask = subcommandRest[1].Split(" ".ToCharArray(), 2);
 				AddTask(projectTask[0], projectTask[1]);
 			}
@@ -113,10 +121,11 @@ namespace Tasks
 		private void SetDone(string idString, bool done)
 		{
 			int id = int.Parse(idString);
+
 			var identifiedTask = _tasks
 				.Select(project => project.Value.FirstOrDefault(task => task.Id == id))
-				.Where(task => task != null)
-				.FirstOrDefault();
+                .FirstOrDefault(task => task != null);
+
 			if (identifiedTask == null) {
 				_console.WriteLine("Could not find a task with an ID of {0}.", id);
 				return;
@@ -128,11 +137,11 @@ namespace Tasks
 		private void Help()
 		{
 			_console.WriteLine("Commands:");
-			_console.WriteLine("  show");
-			_console.WriteLine("  add project <project name>");
-			_console.WriteLine("  add task <project name> <task description>");
-			_console.WriteLine("  check <task ID>");
-			_console.WriteLine("  uncheck <task ID>");
+			_console.WriteLine($"  {ShowCommand}");
+			_console.WriteLine($"  {AddCommand} {ProjectSubcommand} <project name>");
+			_console.WriteLine($"  {AddCommand} {TaskSubCommand} <project name> <task description>");
+			_console.WriteLine($"  {CheckCommand} <task ID>");
+			_console.WriteLine($"  {UncheckCommand} <task ID>");
 			_console.WriteLine();
 		}
 
