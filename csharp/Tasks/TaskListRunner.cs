@@ -18,14 +18,12 @@ namespace Tasks
 
         private readonly ProjectList _projects;
 		private readonly IConsole _console;
-        private readonly UniqueTaskIdProvider _taskIdProvider;
         private readonly ProjectRepresentationWriter _projectRepresentationWriter;
 
         public TaskListRunner(IConsole console)
 		{
 			_console = console;
-			_projects = new ProjectList();
-			_taskIdProvider = new UniqueTaskIdProvider();
+			_projects = new ProjectList(new UniqueTaskIdProvider());
             _projectRepresentationWriter = new ProjectRepresentationWriter(console);
 		}
 
@@ -86,10 +84,7 @@ namespace Tasks
 			}
 		}
 
-		private void AddProject(string name)
-		{
-			_projects.Add(new Project(name, _taskIdProvider));
-		}
+		private void AddProject(string name) => _projects.AddProjectWithName(name);
 
         private Project FindProject(string projectKey) => _projects.SingleOrDefault(project => project.Name == projectKey);
 
