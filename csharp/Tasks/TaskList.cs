@@ -20,12 +20,14 @@ namespace Tasks
         private readonly ICollection<Project> _projects;
 		private readonly IConsole _console;
         private readonly UniqueTaskIdProvider _taskIdProvider;
+        private readonly TaskRepresentationWriter _taskRepresentationWriter;
 
         public TaskList(IConsole console)
 		{
 			_console = console;
 			_projects = new List<Project>();
 			_taskIdProvider = new UniqueTaskIdProvider();
+			_taskRepresentationWriter = new TaskRepresentationWriter(console);
 		}
 
 		public void Run()
@@ -71,8 +73,7 @@ namespace Tasks
 			foreach (var project in _projects) {
 				_console.WriteLine(project.Name);
 				foreach (var task in project.Tasks) {
-					var representation = new TaskRepresentation(task);
-					_console.WriteLine(representation.ToString());
+					_taskRepresentationWriter.Write(task);
 				}
 				_console.WriteLine();
 			}
