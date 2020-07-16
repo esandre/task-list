@@ -16,14 +16,15 @@ namespace Tasks
         private const string ProjectSubcommand = "project";
         private const string TaskSubCommand = "task";
 
-        private readonly IDictionary<string, IList<Task>> _tasks = new Dictionary<string, IList<Task>>();
+        private readonly ICollection<Project> _tasks;
 		private readonly IConsole _console;
 
 		private long _lastId;
 
         public TaskList(IConsole console)
 		{
-			this._console = console;
+			_console = console;
+			_tasks = new List<Project>();
 		}
 
 		public void Run()
@@ -89,18 +90,21 @@ namespace Tasks
 
 		private void AddProject(string name)
 		{
-			_tasks[name] = new List<Task>();
+			_tasks.Add(new Project(name));
 		}
 
-		private void AddTask(string project, string description)
-		{
-			if (!_tasks.TryGetValue(project, out IList<Task> projectTasks))
-			{
+        private Project FindProject(string projectKey) => _tasks.SingleOrDefault(project => project.Key == projectKey);
+
+        private void AddTask(string project, string description)
+        {
+            var projectFound = FindProject(project);
+			if(projectFound is null)
+            {
 				Console.WriteLine("Could not find a project with the name \"{0}\".", project);
 				return;
 			}
 
-            projectTasks.Add(new Task(NextId(), description));		
+            projectFound.Add(new Task(NextId(), description));		
         }
 
 		private void Check(string idString)
