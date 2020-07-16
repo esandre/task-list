@@ -1,13 +1,17 @@
-using System;
-using System.Collections.Generic;
-
 namespace Tasks
 {
 	public class Task
 	{
-		public long Id { get; set; }
+        public Task(long id, string description)
+        {
+            Id = id;
+            Description = description;
+            Done = false;
+        }
 
-		public string Description { get; set; }
+		public long Id { get; }
+
+		public string Description { get; }
 
 		public bool Done { get; set; }
 	}

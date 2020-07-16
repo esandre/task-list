@@ -1,35 +1,34 @@
 using System;
-using System.IO;
 using NUnit.Framework;
 
-namespace Tasks
+namespace Tasks.Tests
 {
 	[TestFixture]
 	public sealed class ApplicationTest
 	{
-		public const string PROMPT = "> ";
+        private const string Prompt = "> ";
 
-		private FakeConsole console;
-		private System.Threading.Thread applicationThread;
+		private FakeConsole _console;
+		private System.Threading.Thread _applicationThread;
 
 		[SetUp]
 		public void StartTheApplication()
 		{
-			this.console = new FakeConsole();
-			var taskList = new TaskList(console);
-			this.applicationThread = new System.Threading.Thread(() => taskList.Run());
-			applicationThread.Start();
+			this._console = new FakeConsole();
+			var taskList = new TaskList(_console);
+			this._applicationThread = new System.Threading.Thread(() => taskList.Run());
+			_applicationThread.Start();
 		}
 
 		[TearDown]
 		public void KillTheApplication()
 		{
-			if (applicationThread == null || !applicationThread.IsAlive)
+			if (_applicationThread == null || !_applicationThread.IsAlive)
 			{
 				return;
 			}
 
-			applicationThread.Abort();
+			_applicationThread.Abort();
 			throw new Exception("The application is still running.");
 		}
 
@@ -84,14 +83,14 @@ namespace Tasks
 
 		private void Execute(string command)
 		{
-			Read(PROMPT);
+			Read(Prompt);
 			Write(command);
 		}
 
 		private void Read(string expectedOutput)
 		{
 			var length = expectedOutput.Length;
-			var actualOutput = console.RetrieveOutput(expectedOutput.Length);
+			var actualOutput = _console.RetrieveOutput(length);
 			Assert.AreEqual(expectedOutput, actualOutput);
 		}
 
@@ -105,7 +104,7 @@ namespace Tasks
 
 		private void Write(string input)
 		{
-			console.SendInput(input + Environment.NewLine);
+			_console.SendInput(input + Environment.NewLine);
 		}
 	}
 }
