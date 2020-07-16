@@ -16,7 +16,7 @@ namespace Tasks
         private const string ProjectSubcommand = "project";
         private const string TaskSubCommand = "task";
 
-        private readonly ICollection<Project> _tasks;
+        private readonly ICollection<Project> _projects;
 		private readonly IConsole _console;
 
 		private long _lastId;
@@ -24,7 +24,7 @@ namespace Tasks
         public TaskList(IConsole console)
 		{
 			_console = console;
-			_tasks = new List<Project>();
+			_projects = new List<Project>();
 		}
 
 		public void Run()
@@ -67,9 +67,9 @@ namespace Tasks
 
 		private void Show()
 		{
-			foreach (var project in _tasks) {
-				_console.WriteLine(project.Key);
-				foreach (var task in project.Value) {
+			foreach (var project in _projects) {
+				_console.WriteLine(project.Name);
+				foreach (var task in project.Tasks) {
 					_console.WriteLine("    [{0}] {1}: {2}", (task.Done ? 'x' : ' '), task.Id, task.Description);
 				}
 				_console.WriteLine();
@@ -90,21 +90,21 @@ namespace Tasks
 
 		private void AddProject(string name)
 		{
-			_tasks.Add(new Project(name));
+			_projects.Add(new Project(name));
 		}
 
-        private Project FindProject(string projectKey) => _tasks.SingleOrDefault(project => project.Key == projectKey);
+        private Project FindProject(string projectKey) => _projects.SingleOrDefault(project => project.Name == projectKey);
 
-        private void AddTask(string project, string description)
+        private void AddTask(string projectName, string description)
         {
-            var projectFound = FindProject(project);
+            var projectFound = FindProject(projectName);
 			if(projectFound is null)
             {
-				Console.WriteLine("Could not find a project with the name \"{0}\".", project);
+				Console.WriteLine("Could not find a project with the name \"{0}\".", projectName);
 				return;
 			}
 
-            projectFound.Add(new Task(NextId(), description));		
+            projectFound.AddTask(new Task(NextId(), description));		
         }
 
 		private void Check(string idString)
@@ -121,8 +121,8 @@ namespace Tasks
 		{
 			int id = int.Parse(idString);
 
-			var identifiedTask = _tasks
-				.Select(project => project.Value.FirstOrDefault(task => task.Id == id))
+			var identifiedTask = _projects
+				.Select(project => project.Tasks.FirstOrDefault(task => task.Id == id))
                 .FirstOrDefault(task => task != null);
 
 			if (identifiedTask == null) {

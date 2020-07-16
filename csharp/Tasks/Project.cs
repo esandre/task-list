@@ -6,14 +6,14 @@ namespace Tasks
     {
         private readonly ICollection<Task> _tasks;
 
-        public Project(string key)
+        public Project(string name)
         {
-            Key = key;
+            Name = name;
             _tasks = new List<Task>();
         }
 
-        public string Key { get; }
-        public IEnumerable<Task> Value => _tasks;
-        public void Add(Task task) => _tasks.Add(task);
+        public string Name { get; }
+        public IEnumerable<Task> Tasks => _tasks;
+        public void AddTask(Task task) => _tasks.Add(task);
     }
 }
