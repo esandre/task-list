@@ -32,6 +32,27 @@ namespace Tasks.Tests
 			throw new Exception("The application is still running.");
 		}
 
+        [Test, Timeout(1000)]
+        public void Task_With_Deadline_Today_Shows_In_Today_Command()
+        {
+            Execute("add project secrets");
+            Execute("add task secrets Eat more donuts.");
+			Execute("deadline 1 " + DateTime.Today.ToString("d"));
+
+			Execute("today");
+            ReadLines(
+                "secrets",
+                "    [ ] 1: Eat more donuts.",
+                ""
+            );
+		}
+
+        //[Test, Timeout(1000)]
+        //public void Task_With_Deadline_Not_Today_Doesnt_Shows_In_Today_Command()
+        //{
+
+        //}
+
 		[Test, Timeout(1000)]
 		public void ItWorks()
 		{
