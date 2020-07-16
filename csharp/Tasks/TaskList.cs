@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tasks.Representation;
 
 namespace Tasks
 {
@@ -70,7 +71,8 @@ namespace Tasks
 			foreach (var project in _projects) {
 				_console.WriteLine(project.Name);
 				foreach (var task in project.Tasks) {
-					_console.WriteLine("    [{0}] {1}: {2}", (task.Done ? 'x' : ' '), task.Id, task.Description);
+					var representation = new TaskRepresentation(task);
+					_console.WriteLine(representation.ToString());
 				}
 				_console.WriteLine();
 			}
