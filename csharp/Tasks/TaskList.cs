@@ -21,12 +21,7 @@ namespace Tasks
 
 		private long _lastId;
 
-		public static void Main()
-		{
-			new TaskList(new RealConsole()).Run();
-		}
-
-		public TaskList(IConsole console)
+        public TaskList(IConsole console)
 		{
 			this._console = console;
 		}
